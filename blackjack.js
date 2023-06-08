@@ -188,10 +188,14 @@ function showSuccessMsg(msg) {
 
 function unhideDealersFirstCard() {
   const DEALERS_CARDS_ELEMENT = document.querySelectorAll('.dealers-hand .card')
-  DEALERS_CARDS_ELEMENT.forEach((dealersCard) => {
-    dealersCard.classList.remove('hide-card')
-    dealersCard.classList.add(dealersFirstHiddenCardValue)
-  })
+
+  for (let dealersCard of DEALERS_CARDS_ELEMENT) {
+    if (dealersCard.classList.contains('hide-card')) {
+      dealersCard.classList.remove('hide-card')
+      dealersCard.classList.add(dealersFirstHiddenCardValue)
+      break
+    }
+  }
 }
 
 function hideSuccessMsg() {
@@ -282,6 +286,7 @@ function addCardToDOM(hand, card) {
     if (DEALERS_HAND.innerHTML == '') {
       cardElement.classList.add('hide-card')
       dealersFirstHiddenCardValue = card.face
+      console.log(dealersFirstHiddenCardValue)
     } else {
       cardElement.classList.add(`${card.face}`)
     }
