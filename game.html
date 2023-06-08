@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/game.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="css/card-library/css/cardstarter.css"
+      type="text/css"
+    />
+    <title>Document</title>
+  </head>
+  <body>
+    <header class="header-container">
+      <h3>BLACKJACK GAME</h3>
+    </header>
+    <main>
+      <div class="dealer-container">
+        <h4 class="semi-header">DEALER</h4>
+        <section class="dealers-hand"></section>
+      </div>
+      <div class="player-container">
+        <h4 class="semi-header">PLAYER</h4>
+        <section class="players-hand"></section>
+      </div>
+
+      <div class="action-buttons">
+        <button id="hit-button">HIT</button>
+        <button id="stay-button">STAND</button>
+      </div>
+      <div class="success-msg-display"></div>
+      <div class="play-exit hide">
+        <button id="play-again-button">PLAY AGAIN</button>
+        <button id="exit-button">
+          <a class="exit-anchor" href="./index.html">EXIT</a>
+        </button>
+      </div>
+    </main>
+    <script defer src="blackjack.js"></script>
+  </body>
+</html>

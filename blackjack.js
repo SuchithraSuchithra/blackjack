@@ -33,6 +33,16 @@ let SHUFFLED_DECK_OF_CARDS_ARRAY = []
 let dealersFirstHiddenCardValue = ''
 let DEALERS_HAND_ARRAY = []
 let PLAYERS_HAND_ARRAY = []
+
+const SOUNDS = {
+  cardsDrop: './sounds/carddrop.mp3',
+  hit: './sounds/pounding-cards-on-table.mp3',
+  laser: 'http://www.freesound.org/data/previews/42/42106_70164-lq.mp3',
+  dog: 'http://www.freesound.org/data/previews/327/327666_5632380-lq.mp3',
+  cow: 'http://www.freesound.org/data/previews/58/58277_634166-lq.mp3',
+  siren: 'http://www.freesound.org/data/previews/336/336899_4939433-lq.mp3',
+}
+
 /*
 --------------------------------------------------------------------------------
  DOMS
@@ -47,7 +57,8 @@ const SUCCESS_MSG_DISPLAY_SECTION_ELEMENT = document.querySelector(
   '.success-msg-display'
 )
 const PLAY_AGAIN_BUTTON_ELEMENT = document.getElementById('play-again-button')
-const PLAY_AGAIN_SECTION_ELEMENT = document.querySelector('.play-again')
+const PLAY_EXIT_SECTION_ELEMENT = document.querySelector('.play-exit')
+const PLAYER = new Audio()
 
 /*
 --------------------------------------------------------------------------------
@@ -56,7 +67,9 @@ const PLAY_AGAIN_SECTION_ELEMENT = document.querySelector('.play-again')
 */
 
 HIT_BUTTON_ELEMENT.addEventListener('click', handleHitAction)
-STAY_BUTTON_ELEMENT.addEventListener('click', handleStayAction)
+STAY_BUTTON_ELEMENT.addEventListener('click', () => {
+  handleStayAction()
+})
 PLAY_AGAIN_BUTTON_ELEMENT.addEventListener('click', handlePlayAgainAction)
 
 /*
@@ -77,6 +90,11 @@ function handlePlayAgainAction() {
 
   // Restore states
   setInitialStates()
+}
+
+function playSound(soundSourceKey) {
+  PLAYER.src = SOUNDS[soundSourceKey]
+  PLAYER.play()
 }
 
 function handleHitAction() {
@@ -111,15 +129,16 @@ function handleStayAction() {
 */
 
 function displayPlayAgain() {
-  PLAY_AGAIN_SECTION_ELEMENT.classList.remove('hide')
+  PLAY_EXIT_SECTION_ELEMENT.classList.remove('hide')
 }
 
 function hidePlayAgain() {
-  PLAY_AGAIN_SECTION_ELEMENT.classList.add('hide')
+  PLAY_EXIT_SECTION_ELEMENT.classList.add('hide')
 }
 
 function runAutomaticDealersHitActions() {
   while (getCurrentScore('dealer') < DEALERS_MAX_VALUE) {
+    console.log('inside while loop')
     addCard('dealer')
   }
 
@@ -221,10 +240,11 @@ function getCurrentScore(hand) {
     score = reduceAceValue(scoreArray, score)
     return score
   }
-  // If dealer and if the current value is DEALERS_MAX_VALUE and player's value is greater than DEALERS_MAX_VALUE
+  // If dealer and if the current value is greater than or equal t0 DEALERS_MAX_VALUE
+  // and player's value is greater than DEALERS_MAX_VALUE, reduce the Ace value
   if (hand === 'dealer') {
     const playersScore = getCurrentScore('player')
-    if (score === DEALERS_MAX_VALUE && playersScore > DEALERS_MAX_VALUE) {
+    if (score >= DEALERS_MAX_VALUE && playersScore > DEALERS_MAX_VALUE) {
       score = reduceAceValue(scoreArray, score)
     }
   }
@@ -265,6 +285,8 @@ function pickRandomCardFromDeck() {
     Math.random() * SHUFFLED_DECK_OF_CARDS_ARRAY.length
   )
   const randomCard = SHUFFLED_DECK_OF_CARDS_ARRAY[randomCardIndex]
+  // remove the selected card from deck
+  SHUFFLED_DECK_OF_CARDS_ARRAY.splice(randomCardIndex, 1)
   return randomCard
 }
 
@@ -280,8 +302,7 @@ function generateDeckOfCards(count) {
 
 function addCardToDOM(hand, card) {
   const cardElement = document.createElement('div')
-  cardElement.classList.add('card')
-
+  cardElement.classList.add('card', 'slit-in-vertical')
   if (hand === 'dealer') {
     if (DEALERS_HAND.innerHTML == '') {
       cardElement.classList.add('hide-card')
@@ -291,11 +312,13 @@ function addCardToDOM(hand, card) {
       cardElement.classList.add(`${card.face}`)
     }
     DEALERS_HAND.append(cardElement)
+    playSound('cardsDrop')
     return
   }
   if (hand === 'player') {
     cardElement.classList.add(`${card.face}`)
     PLAYERS_HAND.append(cardElement)
+    playSound('cardsDrop')
     return
   }
 }

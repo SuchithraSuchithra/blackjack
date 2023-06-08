@@ -1,4 +1,4 @@
-BLACKJACK GAME
+# BLACKJACK GAME <span style="color:blue">some _blue_ text</span>.
 
 NUM OF PLAYERS = 2 (DEALER and a PLAYER)
 
