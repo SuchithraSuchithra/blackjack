@@ -18,7 +18,25 @@ Ace = 1 or 11
 
 ACTIONS
 HIT
-PASS
+STAY
+
+Hos e to
 
 HOW TO PLAY
-Dealer and the player has the option to either HIT or PASS
+PLAYER
+Has the option to either HIT or STAY
+Player plays first
+
+DEALER
+If the total is 17 or more, Dealer must stay. If the total is 16 or under, they must take a card.
+The dealer must continue to take cards until the total is 17 or more, at which point the dealer must stay.
+
+SCORE
+If dealer bust you get twice the bet
+If you hit jackpot you get 150% of the bet if the dealer doesn't have jackpot at the same time
+
+WINNING CASES
+Player wins
+If he hits jackpot with the initial 2 cards stipulated dealers card doesn't add up to 21 as well (in which case dealer's win)
+If player hits and the card value sums up to 21
+If the dealer's sum is over 21

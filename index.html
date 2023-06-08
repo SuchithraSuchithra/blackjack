@@ -8,12 +8,23 @@
     <title>Document</title>
   </head>
   <body>
-    <h1>BLACK JACK GAME</h1>
-    <h2>Dealer Hand</h2>
-    <h2>Player Hand</h2>
-
-    <button>HIT</button>
-    <button>PASS</button>
+    <header>
+      <h3>BLACKJACK GAME</h3>
+    </header>
+    <main>
+      <h4>Dealer Hand</h4>
+      <section class="dealers-hand"></section>
+      <h4>Player Hand</h4>
+      <section class="players-hand"></section>
+      <section class="action-buttons">
+        <button id="hit-button">HIT</button>
+        <button id="stay-button">STAY</button>
+      </section>
+      <section class="success-msg-display"></section>
+      <section class="play-again hide">
+        <button id="play-again-button">PLAY AGAIN</button>
+      </section>
+    </main>
     <script src="blackjack.js"></script>
   </body>
 </html>
