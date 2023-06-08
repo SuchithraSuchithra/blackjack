@@ -30,6 +30,7 @@ const DECK_OF_CARDS_ARRAY = buildOriginalDeck()
 
 // Shuffle the deck of cards
 let SHUFFLED_DECK_OF_CARDS_ARRAY = []
+let dealersFirstHiddenCardValue = ''
 let DEALERS_HAND_ARRAY = []
 let PLAYERS_HAND_ARRAY = []
 /*
@@ -165,23 +166,32 @@ function checkBlackJackCondition() {
 }
 
 function addCard(hand) {
-  const randomCardValue = pickRandomCardFromDeck()
+  const randomCard = pickRandomCardFromDeck()
   if (hand === 'dealer') {
-    DEALERS_HAND_ARRAY.push(randomCardValue)
-    addCardToDOM('dealer', randomCardValue)
+    DEALERS_HAND_ARRAY.push(randomCard)
+    addCardToDOM('dealer', randomCard)
   } else if (hand === 'player') {
-    PLAYERS_HAND_ARRAY.push(randomCardValue)
-    addCardToDOM('player', randomCardValue)
+    PLAYERS_HAND_ARRAY.push(randomCard)
+    addCardToDOM('player', randomCard)
   }
-  return randomCardValue
+  return randomCard
 }
 
 function showSuccessMsg(msg) {
+  unhideDealersFirstCard()
   const SUCCESS_MSG_ELEMENT = document.createElement('h1')
   SUCCESS_MSG_ELEMENT.setAttribute('id', 'msg-element')
   SUCCESS_MSG_ELEMENT.innerText = msg
   SUCCESS_MSG_ELEMENT.classList.add('semi-header')
   SUCCESS_MSG_DISPLAY_SECTION_ELEMENT.append(SUCCESS_MSG_ELEMENT)
+}
+
+function unhideDealersFirstCard() {
+  const DEALERS_CARDS_ELEMENT = document.querySelectorAll('.dealers-hand .card')
+  DEALERS_CARDS_ELEMENT.forEach((dealersCard) => {
+    dealersCard.classList.remove('hide-card')
+    dealersCard.classList.add(dealersFirstHiddenCardValue)
+  })
 }
 
 function hideSuccessMsg() {
@@ -267,24 +277,26 @@ function generateDeckOfCards(count) {
 function addCardToDOM(hand, card) {
   const cardElement = document.createElement('div')
   cardElement.classList.add('card')
-  cardElement.classList.add(`${card.face}`)
 
-  console.dir(cardElement)
   if (hand === 'dealer') {
+    if (DEALERS_HAND.innerHTML == '') {
+      cardElement.classList.add('hide-card')
+      dealersFirstHiddenCardValue = card.face
+    } else {
+      cardElement.classList.add(`${card.face}`)
+    }
     DEALERS_HAND.append(cardElement)
     return
   }
   if (hand === 'player') {
+    cardElement.classList.add(`${card.face}`)
     PLAYERS_HAND.append(cardElement)
     return
   }
 }
 
 function removeCardsFromDOM() {
-  console.log('Inside remove elements')
   const CARDS_ELEMENTS = document.querySelectorAll('.card')
-
-  console.dir(CARDS_ELEMENTS)
 
   CARDS_ELEMENTS.forEach((nodeElement) => {
     nodeElement.remove()
