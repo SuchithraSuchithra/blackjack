@@ -3,27 +3,29 @@
 GLOBAL VARIABLES and CONSTANTS
 --------------------------------------------------------------------------------
 */
-const CARD_VALUES_ARRAY = [
+const RANKS = [
   'A',
-  '2',
-  '3',
-  '4',
-  '5',
-  '6',
-  '7',
-  '8',
-  '9',
+  '02',
+  '03',
+  '04',
+  '05',
+  '06',
+  '07',
+  '08',
+  '09',
   '10',
   'J',
   'Q',
   'K',
 ]
 // clubs (♣), diamonds (♦), hearts (♥) and spades (♠)
-const CARD_SUIT_TYPES_ARRAY = ['♣', '♦', '♥', '♠']
+const SUITS = ['s', 'c', 'd', 'h']
 const BLACKJACK_VALUE = 21
+const DEALERS_MAX_VALUE = 17
+const ACES_VALUE = 11
 const CARDS_WITH_FACE_VALUE_10_ARRAY = ['J', 'Q', 'K']
 // Create deck of cards
-const DECK_OF_CARDS_ARRAY = generateCardsArray()
+const DECK_OF_CARDS_ARRAY = buildOriginalDeck()
 // console.log('CARDS_DECK', DECK_OF_CARDS_ARRAY)
 
 // Shuffle the deck of cards
@@ -116,7 +118,7 @@ function hidePlayAgain() {
 }
 
 function runAutomaticDealersHitActions() {
-  while (getCurrentScore('dealer') < 17) {
+  while (getCurrentScore('dealer') < DEALERS_MAX_VALUE) {
     addCard('dealer')
   }
 
@@ -178,6 +180,7 @@ function showSuccessMsg(msg) {
   const SUCCESS_MSG_ELEMENT = document.createElement('h1')
   SUCCESS_MSG_ELEMENT.setAttribute('id', 'msg-element')
   SUCCESS_MSG_ELEMENT.innerText = msg
+  SUCCESS_MSG_ELEMENT.classList.add('semi-header')
   SUCCESS_MSG_DISPLAY_SECTION_ELEMENT.append(SUCCESS_MSG_ELEMENT)
 }
 
@@ -196,8 +199,7 @@ function getCurrentScore(hand) {
   //   console.log(scoreArray)
   let score = 0
   scoreArray.forEach((arrItem) => {
-    let cardStringValue = arrItem.substring(0, arrItem.length - 1)
-    score += getCardFaceValue(cardStringValue)
+    score += arrItem.value
   })
   //   console.log('The score is ', score)
 
@@ -205,32 +207,21 @@ function getCurrentScore(hand) {
     score = reduceAceValue(scoreArray, score)
     return score
   }
-  // If dealer and if the current value is 17 and player's value is greater than 17
+  // If dealer and if the current value is DEALERS_MAX_VALUE and player's value is greater than DEALERS_MAX_VALUE
   if (hand === 'dealer') {
     const playersScore = getCurrentScore('player')
-    if (score === 17 && playersScore > 17) {
+    if (score === DEALERS_MAX_VALUE && playersScore > DEALERS_MAX_VALUE) {
       score = reduceAceValue(scoreArray, score)
     }
   }
   return score
 }
 
-function getCardFaceValue(cardStringValue) {
-  if (CARDS_WITH_FACE_VALUE_10_ARRAY.includes(cardStringValue)) {
-    return 10
-  } else if (cardStringValue.includes('A')) {
-    return 11
-  } else {
-    return Number(cardStringValue)
-  }
-}
-
 function reduceAceValue(scoreArray, currentScore) {
   let score = currentScore
   for (let i = 0; i < scoreArray.length; ++i) {
-    const cardValue = scoreArray[i].substring(0, scoreArray.length - 1)
-    if (cardValue.includes('A')) {
-      score -= 10
+    if (scoreArray[i].value == ACES_VALUE) {
+      score -= ACES_VALUE - 1
       if (score < BLACKJACK_VALUE) {
         break
       }
@@ -259,9 +250,7 @@ function pickRandomCardFromDeck() {
   const randomCardIndex = Math.floor(
     Math.random() * SHUFFLED_DECK_OF_CARDS_ARRAY.length
   )
-  //   console.log('randomCardIndex', randomCardIndex)
   const randomCard = SHUFFLED_DECK_OF_CARDS_ARRAY[randomCardIndex]
-  SHUFFLED_DECK_OF_CARDS_ARRAY.splice(randomCardIndex, 1)
   return randomCard
 }
 
@@ -275,21 +264,18 @@ function generateDeckOfCards(count) {
   return deckOfCards
 }
 
-function addCardToDOM(hand, randomCardValue) {
-  const cardContainer = document.createElement('div')
-  cardContainer.classList.add('card')
+function addCardToDOM(hand, card) {
+  const cardElement = document.createElement('div')
+  cardElement.classList.add('card')
+  cardElement.classList.add(`${card.face}`)
 
-  const cardElement = document.createElement('h4')
-  cardElement.innerText = randomCardValue
-  cardElement.classList.add('card-content')
-  cardContainer.append(cardElement)
-  //   console.dir(cardElement)
+  console.dir(cardElement)
   if (hand === 'dealer') {
-    DEALERS_HAND.append(cardContainer)
+    DEALERS_HAND.append(cardElement)
     return
   }
   if (hand === 'player') {
-    PLAYERS_HAND.append(cardContainer)
+    PLAYERS_HAND.append(cardElement)
     return
   }
 }
@@ -305,31 +291,40 @@ function removeCardsFromDOM() {
   })
 }
 
+function buildOriginalDeck() {
+  const deck = []
+  // Use nested forEach to generate card objects
+  SUITS.forEach(function (suit) {
+    RANKS.forEach(function (rank) {
+      deck.push({
+        // The 'face' property maps to the library's CSS classes for cards
+        face: `${suit}${rank}`,
+        // Setting the 'value' property for game of blackjack, not war
+        value: Number(rank) || (rank === 'A' ? ACES_VALUE : 10),
+      })
+    })
+  })
+  return deck
+}
+
 function setInitialStates() {
   // Shuffle the deck of cards
   SHUFFLED_DECK_OF_CARDS_ARRAY = shuffleDeckOfCards()
-  // console.log('SHUFFLED_CARDS_DECK', SHUFFLED_DECK_OF_CARDS_ARRAY)
 
   removeCardsFromDOM()
 
   // INITIAL STATES - Dealer and Player has 2 cards each
-  // DEALER's HAND
   DEALERS_HAND_ARRAY = generateDeckOfCards(2)
-
   // Add cards to DOM
-  DEALERS_HAND_ARRAY.forEach((cardValue) => {
-    addCardToDOM('dealer', cardValue)
+  DEALERS_HAND_ARRAY.forEach((card) => {
+    addCardToDOM('dealer', card)
   })
 
-  // PLAYER's HAND
   PLAYERS_HAND_ARRAY = generateDeckOfCards(2)
   // Add cards to DOM
   PLAYERS_HAND_ARRAY.forEach((cardValue) => {
     addCardToDOM('player', cardValue)
   })
-
-  // console.log("Dealer's Initial Cards", DEALERS_HAND_ARRAY)
-  // console.log("Player's Initial Cards", PLAYERS_HAND_ARRAY)
 
   checkBlackJackCondition()
 }

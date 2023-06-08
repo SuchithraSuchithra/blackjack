@@ -5,25 +5,35 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="css/style.css" />
+    <link
+      rel="stylesheet"
+      href="css/card-library/css/cardstarter.css"
+      type="text/css"
+    />
     <title>Document</title>
   </head>
   <body>
-    <header>
+    <header class="header-container">
       <h3>BLACKJACK GAME</h3>
     </header>
     <main>
-      <h4>Dealer Hand</h4>
-      <section class="dealers-hand"></section>
-      <h4>Player Hand</h4>
-      <section class="players-hand"></section>
-      <section class="action-buttons">
+      <div class="dealer-container">
+        <h4 class="semi-header">Dealer Hand</h4>
+        <section class="dealers-hand"></section>
+      </div>
+      <div class="player-container">
+        <h4 class="semi-header">Player Hand</h4>
+        <section class="players-hand"></section>
+      </div>
+
+      <div class="action-buttons">
         <button id="hit-button">HIT</button>
         <button id="stay-button">STAY</button>
-      </section>
-      <section class="success-msg-display"></section>
-      <section class="play-again hide">
+      </div>
+      <div class="success-msg-display"></div>
+      <div class="play-again hide">
         <button id="play-again-button">PLAY AGAIN</button>
-      </section>
+      </div>
     </main>
     <script defer src="blackjack.js"></script>
   </body>
