@@ -69,6 +69,11 @@ button {
   text-decoration: none;
 }
 
+#stay-button,
+#exit-button {
+  background-color: lightcoral;
+}
+
 .slit-in-vertical {
   -webkit-animation: slit-in-vertical 0.45s ease-out both;
   animation: slit-in-vertical 0.45s ease-out both;
