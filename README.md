@@ -73,6 +73,8 @@ Planning to implement the below features
 - SPLIT
 - DOUBLE DOWN
 - SURRENDER
+- multi-players
+- recommendations to hit or stand
 
 ## Game link
 
