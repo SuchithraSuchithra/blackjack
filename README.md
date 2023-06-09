@@ -3,32 +3,32 @@
 
 # BLACKJACK GAME
 
-## <span style="color:blue">Technologies Used</span>
+## Technologies Used
 
 JAVASCRIPT, HTML, CSS
 
-## <span style="color:blue">About the Game</span>
+## About the Game
 
     Blackjack is a card game. A dealer plays aganist one or more players. As a player, the object is to beat the dealer.
 
 Here is the link to wikipedia page [Blackjack Wiki](https://en.wikipedia.org/wiki/Blackjack)
 
-### <span style="color:blue">Card values</span>
+### Card values
 
     2-10 => Face value
     Jack, Queen, King => 10
     Ace => 1 or 11
 
-### <span style="color:blue">How to Win</span>
+### How to Win
 
     Get closer to 21 without going over 21
 
-### <span style="color:blue">You lose</span>
+### You lose
 
     If you go over 21
     If the Dealer gets closer to 21 than you
 
-## <span style="color:blue">How to Play</span>
+## How to Play
 
 ##### PLAYER
 
@@ -40,7 +40,7 @@ Here is the link to wikipedia page [Blackjack Wiki](https://en.wikipedia.org/wik
 - If the total is 17 or more, Dealer must stay. If the total is 16 or under, they must take a card.
 - The dealer must continue to take cards until the total is 17 or more, at which point the dealer must stay.
 
-## <span style="color:blue">Winning Case</span>
+## Winning Case
 
 Player wins
 
@@ -48,7 +48,7 @@ Player wins
 - If player hits and the card value sums up to 21
 - If player stands and the dealer's sum is over 21
 
-## <span style="color:blue">Screenshots</span>
+## Screenshots
 
     Initial Screen - Use START GAME button to start the game
 
@@ -66,13 +66,13 @@ Player wins
 
 ![alt text for screen readers](./images/screenshots/final-state.png 'Text to show on mouseover')
 
-## <span style="color:blue">Future Iterations</span>
+## Future Iterations
 
 Planning to implement the below features
 
-- <span style="color:red">SPLIT</span>
-- <span style="color:red">DOUBLE DOWN</span>
-- <span style="color:red">SURRENDER</span>
+- SPLIT
+- DOUBLE DOWN
+- SURRENDER
 
 ## Game link
 
