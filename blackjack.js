@@ -18,30 +18,29 @@ const RANKS = [
   'Q',
   'K',
 ]
-// clubs (♣), diamonds (♦), hearts (♥) and spades (♠)
+// spades (♠), clubs (♣), diamonds (♦), hearts (♥)
 const SUITS = ['s', 'c', 'd', 'h']
+const SOUNDS = {
+  cardsDrop: './sounds/carddrop.mp3',
+  hit: './sounds/pounding-cards-on-table.mp3',
+  failure: './sounds/failure.mp3',
+  success: './sounds/success.mp3',
+  gameMusic: './sounds/gamemusic.mp3',
+}
+
 const BLACKJACK_VALUE = 21
 const DEALERS_MAX_VALUE = 17
 const ACES_VALUE = 11
 const CARDS_WITH_FACE_VALUE_10_ARRAY = ['J', 'Q', 'K']
-// Create deck of cards
+const SUCCESS_MSG = 'Congratulations, You Won!!!'
+const FAILURE_MSG = 'Hard Luck, You Lost!!!'
+const DRAW_MSG = 'Its a Draw!!!'
 const DECK_OF_CARDS_ARRAY = buildOriginalDeck()
-// console.log('CARDS_DECK', DECK_OF_CARDS_ARRAY)
 
-// Shuffle the deck of cards
-let SHUFFLED_DECK_OF_CARDS_ARRAY = []
+let currentCardsArray = []
 let dealersFirstHiddenCardValue = ''
-let DEALERS_HAND_ARRAY = []
-let PLAYERS_HAND_ARRAY = []
-
-const SOUNDS = {
-  cardsDrop: './sounds/carddrop.mp3',
-  hit: './sounds/pounding-cards-on-table.mp3',
-  laser: 'http://www.freesound.org/data/previews/42/42106_70164-lq.mp3',
-  dog: 'http://www.freesound.org/data/previews/327/327666_5632380-lq.mp3',
-  cow: 'http://www.freesound.org/data/previews/58/58277_634166-lq.mp3',
-  siren: 'http://www.freesound.org/data/previews/336/336899_4939433-lq.mp3',
-}
+let dealersHandArray = []
+let playersHandArray = []
 
 /*
 --------------------------------------------------------------------------------
@@ -98,7 +97,6 @@ function playSound(soundSourceKey) {
 }
 
 function handleHitAction() {
-  //   console.log('Hit clicked')
   if (!hasWinner()) {
     addCard('player')
   }
@@ -106,16 +104,17 @@ function handleHitAction() {
 }
 
 function handleStayAction() {
-  //   console.log('Stay clicked')
   toggleActionButtons(true)
   const playersScore = getCurrentScore('player')
 
   console.log('Player scored ', playersScore)
 
   if (playersScore === BLACKJACK_VALUE) {
-    showSuccessMsg('Player won')
+    playSound('success')
+    showSuccessMsg(SUCCESS_MSG)
   } else if (playersScore > BLACKJACK_VALUE) {
-    showSuccessMsg('Dealer won')
+    playSound('failure')
+    showSuccessMsg(FAILURE_MSG)
   } else {
     runAutomaticDealersHitActions()
   }
@@ -128,6 +127,10 @@ function handleStayAction() {
 --------------------------------------------------------------------------------
 */
 
+window.onload = function () {
+  playSound('gameMusic')
+}
+
 function displayPlayAgain() {
   PLAY_EXIT_SECTION_ELEMENT.classList.remove('hide')
 }
@@ -138,7 +141,6 @@ function hidePlayAgain() {
 
 function runAutomaticDealersHitActions() {
   while (getCurrentScore('dealer') < DEALERS_MAX_VALUE) {
-    console.log('inside while loop')
     addCard('dealer')
   }
 
@@ -151,11 +153,14 @@ function checkWinner() {
   console.log('Dealer scored ', dealersScore)
 
   if (playersScore === dealersScore) {
-    showSuccessMsg('Nobody won')
+    playSound('success')
+    showSuccessMsg(DRAW_MSG)
   } else if (dealersScore > BLACKJACK_VALUE || playersScore > dealersScore) {
-    showSuccessMsg('Player won')
+    playSound('success')
+    showSuccessMsg(SUCCESS_MSG)
   } else {
-    showSuccessMsg('Dealer won')
+    playSound('failure')
+    showSuccessMsg(FAILURE_MSG)
   }
 }
 
@@ -175,11 +180,13 @@ function checkBlackJackCondition() {
 
   if (dealersScore === BLACKJACK_VALUE) {
     toggleActionButtons(true)
-    showSuccessMsg('Dealer Won')
+    playSound('failure')
+    showSuccessMsg(FAILURE_MSG)
     displayPlayAgain()
   } else if (playersScore === BLACKJACK_VALUE) {
     toggleActionButtons(true)
-    showSuccessMsg('Player Won')
+    playSound('success')
+    showSuccessMsg(SUCCESS_MSG)
     displayPlayAgain()
   }
 }
@@ -187,10 +194,10 @@ function checkBlackJackCondition() {
 function addCard(hand) {
   const randomCard = pickRandomCardFromDeck()
   if (hand === 'dealer') {
-    DEALERS_HAND_ARRAY.push(randomCard)
+    dealersHandArray.push(randomCard)
     addCardToDOM('dealer', randomCard)
   } else if (hand === 'player') {
-    PLAYERS_HAND_ARRAY.push(randomCard)
+    playersHandArray.push(randomCard)
     addCardToDOM('player', randomCard)
   }
   return randomCard
@@ -201,7 +208,11 @@ function showSuccessMsg(msg) {
   const SUCCESS_MSG_ELEMENT = document.createElement('h1')
   SUCCESS_MSG_ELEMENT.setAttribute('id', 'msg-element')
   SUCCESS_MSG_ELEMENT.innerText = msg
-  SUCCESS_MSG_ELEMENT.classList.add('semi-header')
+  SUCCESS_MSG_ELEMENT.classList.add(
+    'slit-in-vertical',
+    'ribbon',
+    'ribbon-content'
+  )
   SUCCESS_MSG_DISPLAY_SECTION_ELEMENT.append(SUCCESS_MSG_ELEMENT)
 }
 
@@ -228,13 +239,11 @@ function toggleActionButtons(stateValue) {
 }
 
 function getCurrentScore(hand) {
-  const scoreArray = hand === 'player' ? PLAYERS_HAND_ARRAY : DEALERS_HAND_ARRAY
-  //   console.log(scoreArray)
+  const scoreArray = hand === 'player' ? playersHandArray : dealersHandArray
   let score = 0
   scoreArray.forEach((arrItem) => {
     score += arrItem.value
   })
-  //   console.log('The score is ', score)
 
   if (score > BLACKJACK_VALUE) {
     score = reduceAceValue(scoreArray, score)
@@ -274,19 +283,11 @@ function generateCardsArray() {
   return deckOfCards
 }
 
-function shuffleDeckOfCards() {
-  // TODO: Use Fisher–Yates shuffle algorithms to shuffle the deck of cards
-
-  return DECK_OF_CARDS_ARRAY
-}
-
 function pickRandomCardFromDeck() {
-  const randomCardIndex = Math.floor(
-    Math.random() * SHUFFLED_DECK_OF_CARDS_ARRAY.length
-  )
-  const randomCard = SHUFFLED_DECK_OF_CARDS_ARRAY[randomCardIndex]
+  const randomCardIndex = Math.floor(Math.random() * currentCardsArray.length)
+  const randomCard = currentCardsArray[randomCardIndex]
   // remove the selected card from deck
-  SHUFFLED_DECK_OF_CARDS_ARRAY.splice(randomCardIndex, 1)
+  currentCardsArray.splice(randomCardIndex, 1)
   return randomCard
 }
 
@@ -348,21 +349,20 @@ function buildOriginalDeck() {
 }
 
 function setInitialStates() {
-  // Shuffle the deck of cards
-  SHUFFLED_DECK_OF_CARDS_ARRAY = shuffleDeckOfCards()
+  currentCardsArray = DECK_OF_CARDS_ARRAY.slice(0, DECK_OF_CARDS_ARRAY.length)
 
   removeCardsFromDOM()
 
   // INITIAL STATES - Dealer and Player has 2 cards each
-  DEALERS_HAND_ARRAY = generateDeckOfCards(2)
+  dealersHandArray = generateDeckOfCards(2)
   // Add cards to DOM
-  DEALERS_HAND_ARRAY.forEach((card) => {
+  dealersHandArray.forEach((card) => {
     addCardToDOM('dealer', card)
   })
 
-  PLAYERS_HAND_ARRAY = generateDeckOfCards(2)
+  playersHandArray = generateDeckOfCards(2)
   // Add cards to DOM
-  PLAYERS_HAND_ARRAY.forEach((cardValue) => {
+  playersHandArray.forEach((cardValue) => {
     addCardToDOM('player', cardValue)
   })
 
@@ -376,5 +376,3 @@ function setInitialStates() {
 */
 
 setInitialStates()
-
-// TODO: Allow betting at the begining and accumulate score

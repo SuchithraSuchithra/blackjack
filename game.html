@@ -14,11 +14,18 @@
       href="css/card-library/css/cardstarter.css"
       type="text/css"
     />
-    <title>Document</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <title>Blackjack Game</title>
   </head>
   <body>
     <header class="header-container">
-      <h3>BLACKJACK GAME</h3>
+      <h3 class="game-title">BLACKJACK GAME</h3>
     </header>
     <main>
       <div class="dealer-container">
@@ -31,8 +38,10 @@
       </div>
 
       <div class="action-buttons">
-        <button id="hit-button">HIT</button>
-        <button id="stay-button">STAND</button>
+        <button id="hit-button">HIT <i class="fas fa-thumbs-up"></i></button>
+        <button id="stay-button">
+          STAND <i class="fas fa-hand-paper"></i>
+        </button>
       </div>
       <div class="success-msg-display"></div>
       <div class="play-exit hide">
